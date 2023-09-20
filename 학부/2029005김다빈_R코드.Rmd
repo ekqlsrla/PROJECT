@@ -1,0 +1,96 @@
+---
+title: "중간고사"
+output:
+  word_document: default
+  html_document: default
+date: "2023-04-25"
+---
+#2
+```{r}
+acos(4/5)*180/pi
+```
+
+
+#4
+```{r}
+A = matrix(c(9,-2,-2,9),2,2)
+A.inv = solve(A)
+
+eigen(A.inv)
+```
+#7
+```{r}
+library(car)
+
+dat <- read.table('T1-5.DAT')
+colnames(dat) <- c('Wind','Solar_radiation','CO','NO','NO2','O3','HC')
+
+Y1 = dat$NO2
+Y2 = dat$O3
+X1 = dat$Wind
+X2 = dat$Solar_radiation
+
+
+```
+
+#7-(a)
+
+```{r}
+X = matrix(cbind(Y1,Y2),42,2)
+
+mu0 = c(10,10)
+xbar <- colMeans(X)
+S <- cov(X)
+S.inv <- solve(S)
+n = 42
+p = 2
+T2 <- n*(xbar-mu0)%*%S.inv%*%(xbar-mu0)
+
+
+#critical value
+
+
+c.value <- (n-1)*p/(n-p)*qf(0.95,p,n-p)
+
+T2
+c.value
+```
+
+```{r}
+library(DescTools)
+
+HotellingsT2Test(X,mu = mu0, test = "f")
+```
+#7-(b)
+```{r}
+#mu1
+
+mu1 = mean(Y1)
+v1 = Var(Y1)
+f = p*(n-1)/(n-p)*qf(0.95,p,n-p)
+
+c(mu1 - sqrt(f)*sqrt(v1/n), mu1+sqrt(f)*sqrt(v1/n))
+
+
+#mu2
+mu2 = mean(Y2)
+v2 = Var(Y2)
+f = p*(n-1)/(n-p)*qf(0.95,p,n-p)
+
+c(mu2 - sqrt(f)*sqrt(v2/n), mu1+sqrt(f)*sqrt(v2/n))
+```
+
+#7-(c)
+```{r}
+
+mod <- lm(cbind(Y1,Y2)~X1+X2,data = dat)
+manova.dat <- Anova(mod)
+
+summary(manova.dat)
+```
+
+
+
+
+
+
